@@ -1,4 +1,4 @@
-# Preliminary EDA Notebook README
+# JPMC CC Fraud EDA
 
 ## Overview
 This notebook offers a first glance at our dataset, covering:
