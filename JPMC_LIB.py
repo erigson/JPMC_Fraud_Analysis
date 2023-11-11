@@ -94,47 +94,4 @@ class JPMC_LIB():
             'f1': f1_score(y_test, sampled_pred),
             'roc_auc': roc_auc_score(y_test, sampled_pred)
         }
-        return sampled_metrics
-    
-
-    @staticmethod
-    def kmean_hyper_param_tuning(data):
-        """
-        Hyper parameter tuning to select the best from all the parameters on the basis of silhouette_score.
-
-        :param data: dimensionality reduced data after applying PCA
-        :return: best number of clusters for the model (used for KMeans n_clusters)
-        """
-        # candidate values for our number of cluster
-        parameters = [2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40]
-
-        # instantiating ParameterGrid, pass number of clusters as input
-        parameter_grid = ParameterGrid({'n_clusters': parameters})
-
-        best_score = -1
-        kmeans_model = KMeans()     # instantiating KMeans model
-        silhouette_scores = []
-
-        # evaluation based on silhouette_score
-        for p in parameter_grid:
-            kmeans_model.set_params(**p)    # set current hyper parameter
-            kmeans_model.fit(data)          # fit model on wine dataset, this will find clusters based on parameter p
-
-            ss = silhouette_scores(data, kmeans_model.labels_)   # calculate silhouette_score
-            silhouette_scores += [ss]       # store all the scores
-
-            print('Parameter:', p, 'Score', ss)
-
-            # check p which has the best score
-            if ss > best_score:
-                best_score = ss
-                best_grid = p
-
-        # plotting silhouette score
-        plt.bar(range(len(silhouette_scores)), list(silhouette_scores), align='center', color='#722f59', width=0.5)
-        plt.xticks(range(len(silhouette_scores)), list(parameters))
-        plt.title('Silhouette Score', fontweight='bold')
-        plt.xlabel('Number of Clusters')
-        plt.show()
-
-        return best_grid['n_clusters']    
+        return sampled_metrics 
