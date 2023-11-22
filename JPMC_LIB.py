@@ -94,4 +94,19 @@ class JPMC_LIB():
             'f1': f1_score(y_test, sampled_pred),
             'roc_auc': roc_auc_score(y_test, sampled_pred)
         }
-        return sampled_metrics 
+        return sampled_metrics
+    def cluster_summary(df, target):    
+        # Assuming you have a DataFrame 'df' with 'ClusterLabel' and 'ActualLabel'
+        cluster= df[df['ClusterLabel'] == f'cluster{str(target)}']
+
+        # Count the number of fraud and non-fraud cases in cluster3
+        fraud_count = cluster['ActualLabel'].value_counts()
+        print(f'{fraud_count}\n')
+
+
+        # Calculate proportions
+        # Assuming 'is_fraud' is your fraud label in 'ActualLabel'
+        fraud_cases = df[df['ActualLabel'] == 1]
+        percentage_of_fraud_in_cluster =  100 * ((cluster['ActualLabel'] == 1).sum() / len(fraud_cases))
+        print(f"Percentage of total fraud cases in cluster{str(target)}: {percentage_of_fraud_in_cluster:.2f}%")
+        print(f"Percentage of fraud cases to non fraud cases in cluster{str(target)}: {100 * (fraud_count[1]/fraud_count[0]):.2f}%")
