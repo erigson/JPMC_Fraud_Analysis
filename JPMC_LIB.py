@@ -109,4 +109,27 @@ class JPMC_LIB():
         fraud_cases = df[df['ActualLabel'] == 1]
         percentage_of_fraud_in_cluster =  100 * ((cluster['ActualLabel'] == 1).sum() / len(fraud_cases))
         print(f"Percentage of total fraud cases in cluster{str(target)}: {percentage_of_fraud_in_cluster:.2f}%")
-        print(f"Percentage of fraud cases to non fraud cases in cluster{str(target)}: {100 * (fraud_count[1]/fraud_count[0]):.2f}%")
+        print(f"ratio of fraud cases to non fraud cases in cluster{str(target)}:{len(fraud_cases)}" )
+    
+    def gmm():
+        gmm = GaussianMixture(n_components=3, random_state=0)  # Adjust n_components as needed
+        gmm.fit(X_scaled)
+
+        clusters = gmm.predict(X_scaled)
+
+        weights = list(gmm.weights_)
+        cluster_labels = []
+        for i in range(1, len(weights)+1):
+            cluster_labels.append(f'cluster{i}')
+        predicted_labels = [cluster_labels[cluster] for cluster in clusters]
+
+        # Create a DataFrame with actual and predicted labels
+        cluster_df = pd.DataFrame({'ActualLabel': y_scaled, 'ClusterLabel': predicted_labels})
+
+        cluster_fraud_distribution = cluster_df.groupby('ClusterLabel')['ActualLabel'].value_counts().unstack()
+
+        cluster_fraud_distribution.plot(kind='bar', stacked=True)
+        plt.xlabel('Cluster')
+        plt.ylabel('Number of Cases')
+        plt.title('Distribution of Fraud Cases in Each Cluster')
+        plt.show()
